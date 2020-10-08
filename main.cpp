@@ -1,4 +1,5 @@
 #include <iostream>
+#include <typeinfo>
 using namespace std;
 
 class AnyType {
@@ -20,16 +21,11 @@ class AnyType {
     } type;
 
 public:
-    ///
-    /// \brief AnyType
-    ///Default Constructor
+
     AnyType(){
-        type = Type::Double;
         value.as_double = 0.0;
     }
-    ///
-    ///\brief AnyType
-    ///Parameterized Constructor
+
     template <typename T>
     AnyType(T value_){
 
@@ -59,21 +55,14 @@ public:
             throw "Bad_cast caught: Fundamental types only!";
 
     }
-    ///
-    /// \brief AnyType
-    /// \param atObj
-    ///Copy constructor
+
     AnyType(const AnyType &atObj){
         value = atObj.value;
         type = atObj.type;
     }
 
     template <typename T>
-    ///
-    /// \brief operator =
-    /// \param value_
-    /// \return
-    ///Assignment operator
+
     AnyType& operator= (T value_){
 
         string typeid_name = typeid(value_).name();
@@ -103,11 +92,7 @@ public:
 
         return *this;
     }
-    ///
-    /// \brief operator =
-    /// \param atObj
-    /// \return
-    ///Copy operator
+
     AnyType& operator=(const AnyType atObj){
 
         if (&atObj == this)
@@ -121,26 +106,10 @@ public:
     /// \param atObj
     ///Swaps two objects of AnyType class
     void swap(AnyType& atObj){
-    if(type == atObj.type){//switch
-        switch(type){
-        case Type::Int:
-            std::swap(this->value.as_int, atObj.value.as_int);
-            break;
-        case Type::Float:
-            std::swap(this->value.as_float, atObj.value.as_float);
-            break;
-        case Type::Double:
-            std::swap(this->value.as_double, atObj.value.as_double);
-            break;
-        case Type::Bool:
-            std::swap(this->value.as_bool, atObj.value.as_bool);
-            break;
-        case Type::Char:
-            std::swap(this->value.as_char, atObj.value.as_char);
-            break;
-        }
-    }
-    std::swap(type, atObj.type);
+
+        AnyType temp = *this;
+        *this = atObj;
+        atObj = temp;
 }
     ///
     /// \brief getType
@@ -174,43 +143,57 @@ public:
         if(current_type == *typeid(T).name())
             switch(type){
                 case Type::Int:
-                    return static_cast<int>(value.as_int);
+                    return value.as_int;
                 case Type::Float:
-                    return static_cast<float>(value.as_float);
+                    return value.as_float;
                 case Type::Double:
-                    return static_cast<double>(value.as_double);
+                    return value.as_double;
                 case Type::Bool:
-                    return static_cast<bool>(value.as_bool);
+                    return value.as_bool;
                 case Type::Char:
-                    return static_cast<char>(value.as_char);
+                    return value.as_char;
             }
         else
             throw "Bad_cast caught: Wrong type of stored value!";
-
-}
+    }
 };
 
 int main()
 {
     try {
-        AnyType anyType = 126;
+        AnyType anyType;
+        anyType = 126;
         anyType = true;
         anyType = 1.7;
-        cout << anyType.getType()<<endl;
-        AnyType anyType2 = 54655;
+        cout <<"Var 1 " << endl;
+        cout <<"Type "<< anyType.getType()<<endl;
+        cout <<"Value "<< anyType.getValue<double>()<< endl;
+
+        AnyType anyType2 = 123;
+        cout <<"Var 2 " << endl;
+        cout <<"Type "<< anyType2.getType()<<endl;
+        cout <<"Value "<< anyType2.getValue<int>()<< endl;
 
         swap(anyType,anyType2);
-        cout << anyType.getValue<int>()<< endl;
+        cout <<"Swap" << endl;
+        cout <<"Var 1 " << endl;
+        cout <<"Type "<< anyType.getType()<<endl;
+        cout <<"Value "<< anyType.getValue<int>()<< endl;
+        cout <<"Var 2 " << endl;
+        cout <<"Type "<< anyType2.getType()<<endl;
+        cout <<"Value "<< anyType2.getValue<double>()<< endl;
 
         anyType2 = anyType;
-        cout << anyType2.getValue<int>()<< endl;
-        cout << anyType.getValue<double>()<< endl;
+        cout <<"Var 2 = Var 1 " << endl;
+        cout <<"Var 1 " << anyType.getValue<int>()<< endl;
+        cout <<"Var 2 " << anyType2.getValue<int>()<< endl;
+
+
         anyType2 = 126.5f;
-        cout <<"Int "<< anyType2.getValue<int>()<< endl;
-        cout <<"Double "<< anyType2.getValue<double>()<< endl;
-        cout <<"Float "<< anyType2.getValue<float>()<< endl;
-        cout <<"Bool "<< anyType2.getValue<bool>()<< endl;
-        cout <<"Char "<< anyType2.getValue<char>()<< endl;
+        cout <<"Cast " << endl;
+        cout <<"Var 2 = 126.5f" << endl;
+        cout <<"Extract float "<< anyType2.getValue<float>()<< endl;
+        cout <<"Extract char "<< anyType2.getValue<char>()<< endl;
 
     }
     catch (const char* msg) {
