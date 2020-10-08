@@ -115,7 +115,7 @@ public:
     /// \brief getType
     /// \return
     ///Returns the type of the contained value
-    string getType(){
+    string getType() const {
 
         switch(type){
             case Type::Int:
@@ -137,7 +137,7 @@ public:
     /// \brief getValue
     /// \return
     ///Extracts a value should provide type-safe access. If the requested type does not match to stored type exception is thrown
-    T getValue() {
+    T getValue() const {
         char current_type = static_cast<char>(getType()[0]);
 
         if(current_type == *typeid(T).name())
