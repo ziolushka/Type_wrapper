@@ -30,7 +30,6 @@ public:
     template <typename T>
     AnyType(T value_)
     {
-
         std::string typeid_name = typeid(value_).name();
 
         if (typeid_name == typeid(bool).name()) {
@@ -54,8 +53,7 @@ public:
             m_type = Type::Float;
         }
         else
-            throw "Bad_cast caught: Fundamental types only!";
-
+            throw std::exception("Bad_cast caught: Fundamental types only!");
     }
 
     AnyType(const AnyType& atObj)
@@ -67,7 +65,6 @@ public:
     template <typename T>
     AnyType& operator= (T value_)
     {
-
         std::string typeid_name = typeid(value_).name();
 
         if (typeid_name == typeid(bool).name()) {
@@ -91,7 +88,7 @@ public:
             m_type = Type::Float;
         }
         else
-            throw "Bad_cast caught: Fundamental types only!";
+            throw throw std::exception("Bad_cast caught: Fundamental types only!");
 
         return *this;
     }
@@ -110,18 +107,13 @@ public:
     ///Swaps two objects of AnyType class
     void swap(AnyType& atObj)
     {
-
         AnyType temp = *this;
         *this = atObj;
         atObj = temp;
     }
-    ///
-    /// \brief getType
-    /// \return
-    ///Returns the type of the contained value
+
     std::string get_type() const
     {
-
         switch (m_type) {
         case Type::Int:
             return "int";
@@ -161,7 +153,7 @@ public:
                 return m_value.as_char;
             }
         else
-            throw "Bad_cast caught: Wrong type of stored value!";
+            throw throw std::exception("Bad_cast caught: Wrong type of stored value!");
     }
 };
 
